@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write   # <-- This gives the Action permission to push code
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -19,18 +22,22 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd vivid-site-shine-main
+          npm install
 
       - name: Build Vite app
-        run: npm run build
+        run: |
+          cd vivid-site-shine-main
+          npm run build
 
       - name: Deploy built files to hostinger-deploy branch
         run: |
-          cd dist
+          cd vivid-site-shine-main/dist
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Deploy to Hostinger"
           git branch -M main
-          git push --force https://github.com/${{ github.repository }} main:hostinger-deploy
+          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main:hostinger-deploy
