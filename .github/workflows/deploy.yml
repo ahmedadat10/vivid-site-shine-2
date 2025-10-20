@@ -6,30 +6,31 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-          cache: npm
+          node-version: 18
 
       - name: Install dependencies
-          run: npm install
+        run: npm install
 
-
-      - name: Build the Vite app
+      - name: Build Vite app
         run: npm run build
 
-      - name: Deploy dist folder to hostinger-deploy branch
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: hostinger-deploy
-          folder: dist
-          clean: true
-          commit-message: "Auto build and deploy from GitHub Actions"
+      - name: Deploy built files to hostinger-deploy branch
+        run: |
+          cd dist
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy to Hostinger"
+          git branch -M main
+          git push --force https://github.com/${{ github.repository }} main:hostinger-deploy
