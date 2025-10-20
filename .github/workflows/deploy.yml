@@ -22,18 +22,14 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: |
-          cd vivid-site-shine-main
-          npm install
+        run: npm install
 
       - name: Build Vite app
-        run: |
-          cd vivid-site-shine-main
-          npm run build
+        run: npm run build
 
       - name: Deploy built files to hostinger-deploy branch
         run: |
-          cd vivid-site-shine-main/dist
+          cd dist
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
